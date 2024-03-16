@@ -7,7 +7,10 @@ class ChannelNotPublic extends Error { }
 const cacheSeconds = 3600;
 
 export default defineEventHandler(async (event) => {
-    const channel = getRouterParam(event, 'channel') as string
+  const channel = getRouterParam(event, 'channel') as string
+  const query = getQuery(event)
+
+  console.log(`Fetching feed for channel ${channel} before ${query.from_id}`)
 
   if (!validateChannelString(channel)) {
     throw createError({
@@ -17,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const rssFeed = await getChannelFeed(channel);
+    const rssFeed = await getChannelFeed({ channel,  beforeId: query.from_id as string});
     setResponseHeader(event, 'Content-Type', 'text/xml;charset=UTF-8')
     setResponseHeader(event, 'Cache-Control', `max-age=${cacheSeconds}`)
 
@@ -41,8 +44,9 @@ function validateChannelString(channel: string) {
   return channel.match(/^[A-Za-z][A-Za-z0-9_]{4,31}$/)
 }
 
-async function getChannelFeed(channel : string) {
-  const url = `https://t.me/s/${channel}`;
+async function getChannelFeed(channelFeedOptions: {channel : string, beforeId : string}) {
+  const url = `https://t.me/s/${channelFeedOptions.channel}?before=${channelFeedOptions.beforeId}`;
+  console.log(`Fetching ${url}`);
   const html = await getPageHtml(url);
 
   const $ = cheerio.load(html) as cheerio.Root;
