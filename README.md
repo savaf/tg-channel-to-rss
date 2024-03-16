@@ -1,8 +1,42 @@
-# Nuxt 3 Minimal Starter
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# tg-channel-to-rss
 
-## Setup
+A simple UI and API to create RSS feed from a Telegram channel. **\*\*(only works on public channels)\*\***
+
+
+## Demo
+
+[https://tg-channel-to-rss.vercel.app](https://tg-channel-to-rss.vercel.app/)
+
+
+## API Reference
+
+#### Get last messages
+
+```http
+  GET /api/rss/<channel_id>?from_id=<message_id>
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `channel_id` | `string` | **Required**. without \`@\` |
+| `from_id` | `string` |  Get messages from a message_id  |
+
+
+## Run Locally
+
+### Setup
+Clone the project
+
+```bash
+  git clone https://github.com/savaf/tg-channel-to-rss.git
+```
+
+Go to the project directory
+
+```bash
+  cd tg-channel-to-rss
+```
 
 Make sure to install the dependencies:
 
@@ -20,7 +54,13 @@ yarn install
 bun install
 ```
 
-## Development Server
+Start the server
+
+```bash
+  npm run start
+```
+
+### Development Server
 
 Start the development server on `http://localhost:3000`:
 
@@ -38,7 +78,7 @@ yarn dev
 bun run dev
 ```
 
-## Production
+### Production
 
 Build the application for production:
 
@@ -72,4 +112,6 @@ yarn preview
 bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Author
+
+- [@savaf](https://www.github.com/savaf)
