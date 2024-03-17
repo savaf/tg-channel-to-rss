@@ -2,7 +2,7 @@
 let channel = ref<string>('');
 
 const rssLink = computed<string>(() => {
-  return window.location.href + 'rss/' + channel.value;
+  return window.location.href + 'api/rss/' + channel.value;
 });
 
 
