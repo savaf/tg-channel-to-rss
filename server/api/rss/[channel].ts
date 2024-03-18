@@ -48,8 +48,10 @@ function validateChannelString(channel: string) {
 }
 
 async function getChannelFeed(channelFeedOptions: {channel : string, beforeId : string}) {
-  const url = `https://t.me/s/${channelFeedOptions.channel}?before=${channelFeedOptions.beforeId}`;
-  console.log(`Fetching ${url}`);
+  let url = `https://t.me/s/${channelFeedOptions.channel}`;
+  if (channelFeedOptions.beforeId) {
+    url += `?before=${channelFeedOptions.beforeId}`;
+  }
   const html = await getPageHtml(url);
 
   const $ = cheerio.load(html) as cheerio.Root;
