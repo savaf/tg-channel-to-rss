@@ -21,7 +21,10 @@ export default defineEventHandler(async (event) => {
 
   try {
     const rssFeed = await getChannelFeed({ channel,  beforeId: query.from_id as string});
+
     setResponseHeader(event, 'Content-Type', 'text/xml;charset=UTF-8')
+    setResponseHeader(event, 'Vercel-CDN-Cache-Control', `max-age=${cacheSeconds}`)
+    setResponseHeader(event, 'CDN-Cache-Control', `max-age=${cacheSeconds}`)
     setResponseHeader(event, 'Cache-Control', `max-age=${cacheSeconds}`)
 
     return rssFeed
@@ -63,16 +66,17 @@ async function getChannelFeed(channelFeedOptions: {channel : string, beforeId : 
     description: $('meta[property="og:description"]').attr('content') as string,
   });
 
-  $('.tgme_widget_message_bubble').each((_, element) => {
-      const $message = $(element);
-      const content = getTextFromDiv($message) as string;
-      const item = {
-          link: getLinkFromDiv($message),
-          title: shorten(content, { width: 250, placeholder: '...' }),
-          description: content,
-          date: new Date($message.find('time.time').attr('datetime') as string),
-      };
-      feed.addItem(item);
+  $('.tgme_widget_message').each((_, element) => {
+    const $message = $(element);
+    const content = getTextFromDiv($message) as string;
+    const item = {
+      id: ($message.data('post')).split('/').pop() as string,
+      link: getLinkFromDiv($message),
+      title: shorten(content, { width: 250, placeholder: '...' }),
+      description: content,
+      date: new Date($message.find('time.time').attr('datetime') as string),
+    };
+    feed.addItem(item);
   });
 
   const rssFeed = feed.rss2();
